@@ -33,6 +33,58 @@ body {
 }
 .menu__title {
   font-size: 50px;
+  letter-spacing: 12px;
+  line-height: 1;
+}
+.menu__subtitle {
+  font-size: 15px;
+  margin-top: 10px;
+  font-weight: bold;
+  letter-spacing: 8px;
+}
+.menu__items {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: auto;
+  gap: 12px;
+}
+.menu__item {
+  position: relative;
+  padding: 10px 15px;
+  border: none;
+  background-color: transparent;
+  color: #1f291f;
+  text-align: left;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.menu__item .menu__arrow {
+  visibility: hidden;
+  display: inline-block;
+  width: 30px;
+}
+.menu__item.active {
+  background-color: #1f291f;
+  color: #a8b58b;
+}
+.menu__item.active .menu__arrow {
+  visibility: visible;
+}
+.menu__item:hover {
+  background-color: #a8b58b;
+  color: #1f291f;
+}
+.menu__item:hover .menu__arrow {
+  visibility: visible;
+}
+.menu__footer {
+  margin-top: 55px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=style.css.map */

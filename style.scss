@@ -36,5 +36,60 @@ body{
   }
   &__title{
     font-size: 50px;
+    letter-spacing: 12px;
+    line-height: 1;
+  }
+  &__subtitle{
+    font-size: 15px;
+    margin-top: 10px;
+    font-weight: bold;
+    letter-spacing: 8px;
+  }
+  &__items {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: auto;
+    gap: 12px;
+  }
+
+  &__item{
+    position: relative;
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    color: $lcd-dark;
+    text-align: left;
+    font-family:"Courier New", monospace ;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+
+    .menu__arrow{
+      visibility: hidden;
+      display: inline-block;
+      width: 30px;
+    }
+
+    &.active{
+      background-color: $lcd-dark;
+      color: $lcd-bg;
+      .menu__arrow{
+        visibility: visible;
+      }
+    }
+    &:hover{
+      background-color: $lcd-bg;
+      color: $lcd-dark;
+      .menu__arrow{
+        visibility: visible;
+      }
+    }
+  }
+  &__footer{
+    margin-top: 55px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
   }
 }
