@@ -1,0 +1,40 @@
+$lcd-bg: #a8b58b;
+$lcd-dark: #1f291f;
+$page-bg: #202420;
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $page-bg;
+  font-family: "Courier New", monospace;
+}
+
+.game{
+  width: 700px;
+}
+
+.menu{
+  display: flex;
+  padding: 50px;
+  min-height: 500px;
+  flex-direction: column;
+  background: $lcd-bg;
+  color: $lcd-dark;
+  border: 8px solid #111;
+  box-shadow: 0 0 0 5px #4b5545, 0 15px 40px rgb(0, 0, 0, 0.5);
+
+  &__header{
+    text-align: center;
+    margin-bottom: 55px;
+  }
+  &__title{
+    font-size: 50px;
+  }
+}

@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #202420;
+  font-family: "Courier New", monospace;
+}
+
+.game {
+  width: 700px;
+}
+
+.menu {
+  display: flex;
+  padding: 50px;
+  min-height: 500px;
+  flex-direction: column;
+  background: #a8b58b;
+  color: #1f291f;
+  border: 8px solid #111;
+  box-shadow: 0 0 0 5px #4b5545, 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+.menu__header {
+  text-align: center;
+  margin-bottom: 55px;
+}
+.menu__title {
+  font-size: 50px;
+}
+
+/*# sourceMappingURL=style.css.map */
