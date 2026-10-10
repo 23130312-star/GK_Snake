@@ -47,9 +47,39 @@
         <div class="menu__footer">
             ↑ ↓ SELECT &nbsp;&nbsp; ENTER OK
         </div>
-
     </section>
+    <section id="levelMenu" class="level__menu" hidden>
+        <h2>SELECT LEVEL</h2>
 
+        <div class="level__list">
+            <button data-level="1" class="active">▶ LEVEL 1</button>
+            <button data-level="2">LEVEL 2</button>
+            <button data-level="3">LEVEL 3</button>
+            <button data-level="4">LEVEL 4</button>
+            <button data-level="5">LEVEL 5</button>
+            <button data-level="6">LEVEL 6</button>
+        </div>
+
+        <button id="backLevelBtn">◀ BACK</button>
+
+        <p>↑ ↓ SELECT - ENTER OK</p>
+    </section>
+    <section id="gameScreen" class="game__screen" hidden>
+        <div class="game__info">
+            <span>LEVEL: <strong id="level">1</strong></span>
+            <span>SCORE: <strong id="score">0</strong></span>
+            <span>FOOD: <strong id="foodCount">0</strong>/5</span>
+        </div>
+        <div id="gameBoard" class="game__board" ></div>
+
+        <p id="gameMessage"></p>
+
+        <div class="game__controls">
+            <button id="pauseBtn">PAUSE</button>
+            <button id="restartBtn">RESTART</button>
+            <button id="backBtn">MENU</button>
+        </div>
+    </section>
 </main>
 
 <script src="/js/menu.js"></script>
