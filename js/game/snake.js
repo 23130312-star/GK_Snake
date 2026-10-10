@@ -21,23 +21,34 @@ export function clearSnake() {
     });
 }
 
-export function moveSnake(food) {
+export function moveSnake(food, level) {
     direction = nextDirection;
     const head = snake[0];
-    const newHead = {
-        x: (head.x + direction.x + cols) % cols,
-        y: (head.y + direction.y + rows) % rows
-    };
+    const newX = head.x + direction.x;
+    const newY = head.y + direction.y;
+
+    const newHead = level.handleWall(newX, newY, cols, rows);
     const ateFood = food !== null &&
         newHead.x === food.x &&
         newHead.y === food.y;
+
+    if (level.checkCollision(snake, newHead, ateFood)) {
+        return {
+            gameOver: true,
+            ateFood: false
+        };
+    }
+
     snake.unshift(newHead);
     if (!ateFood) {
         snake.pop();
     }
     clearSnake();
     drawSnake();
-    return ateFood;
+    return {
+        gameOver: false,
+        ateFood
+    };
 }
 
 export function changeDirection(x, y) {

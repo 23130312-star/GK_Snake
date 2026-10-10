@@ -1,11 +1,11 @@
 import {createBoard} from "./board.js";
 import {drawSnake, moveSnake, changeDirection} from "./snake.js";
 import {createFood, clearFood, food} from "./food.js";
+import { level1 } from "/js/levels/level_1.js";
 
 let gameLoop = null;
 let score = 0;
 let foodCount = 0;
-const foodTarget = 5;
 
 export function startGame() {
     clearInterval(gameLoop);
@@ -21,17 +21,28 @@ export function startGame() {
     document.getElementById("gameMessage").textContent = "";
 
     gameLoop = setInterval(() => {
-        const ateFood = moveSnake(food);
 
-        if (ateFood) {
+        const result = moveSnake(food, level1);
+
+        if (result.gameOver) {
+            clearInterval(gameLoop);
+            gameLoop = null;
+
+            document.getElementById("gameMessage").textContent = "GAME OVER!";
+            return;
+        }
+
+        if (result.ateFood) {
             score += 10;
             foodCount++;
 
             updateHUD();
 
-            if (foodCount >= foodTarget) {
+            if (foodCount >= level1.foodTarget) {
                 clearInterval(gameLoop);
                 gameLoop = null;
+
+                clearFood();
 
                 document.getElementById("gameMessage").textContent =
                     "LEVEL 1 COMPLETED!";
@@ -41,7 +52,8 @@ export function startGame() {
             clearFood();
             createFood();
         }
-    }, 200);
+
+    }, level1.speed);
 }
 
 document.addEventListener("keydown", (event) => {
