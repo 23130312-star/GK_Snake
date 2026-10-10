@@ -93,3 +93,77 @@ body{
     font-weight: bold;
   }
 }
+.level-menu {
+  padding: 40px;
+  text-align: center;
+  background: #a8b58b;
+  color: #1f291f;
+
+  h2 {
+    margin-bottom: 30px;
+  }
+
+  .level-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    button {
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: #1f291f;
+      font-family: inherit;
+      font-size: 18px;
+      cursor: pointer;
+
+      &.active,
+      &:hover {
+        background: #1f291f;
+        color: #a8b58b;
+      }
+    }
+  }
+
+  #backLevelBtn {
+    margin-top: 25px;
+    padding: 10px 25px;
+    cursor: pointer;
+  }
+}
+
+.level-menu[hidden],
+#mainMenu[hidden],
+#gameScreen[hidden] {
+  display: none !important;
+}
+
+// scss board
+.game__board{
+  display: grid;
+  grid-template-columns: repeat(20,20px);
+  grid-template-rows: repeat(20, 20px);
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  background: $lcd-bg;
+  border: 3px solid $lcd-dark;
+  box-sizing: content-box;
+}
+.cell {
+  width: 20px;
+  height: 20px;
+
+  &.snake {
+    background: $lcd-dark;
+  }
+
+  &.food {
+    background: #526b38;
+    border-radius: 50%;
+  }
+
+  &.wall {
+    background: #46513c;
+  }
+}
