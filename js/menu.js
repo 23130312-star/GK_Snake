@@ -48,7 +48,8 @@ function selectMenu(item) {
             break;
 
         case "level":
-            console.log("LEVEL");
+            document.getElementById("mainMenu").hidden = true;
+            document.getElementById("levelMenu").hidden = false;
             break;
 
         case "score":
