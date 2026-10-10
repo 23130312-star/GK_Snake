@@ -1,6 +1,8 @@
+import { createBoard } from "./game/board.js";
+import {drawSnake} from "./game/snake.js";
 const menuItems = document.querySelectorAll('.menu__item');
 
-let selectedIndex = -1;
+let selectedIndex = 0;
 
 function updateMenu() {
     menuItems.forEach((item, index) => {
@@ -44,7 +46,11 @@ function selectMenu(item) {
 
     switch (action) {
         case "start":
-            console.log("NEW GAME");
+            document.getElementById("mainMenu").hidden = true;
+            document.getElementById("gameScreen").hidden = false;
+
+            createBoard();
+            drawSnake();
             break;
 
         case "level":

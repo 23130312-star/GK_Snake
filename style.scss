@@ -1,126 +1,142 @@
-$lcd-bg: #a8b58b;
-$lcd-dark: #1f291f;
-$page-bg: #202420;
+$lcd-bg: #e7f2d1;
+$lcd-green: #355c32;
+$lcd-light: #f5faec;
+$lcd-cell: #aad751;
+$lcd-food: #e74747;
+$grass-dark: #a2d149;
+$snake-color: #467c35;
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-body{
+body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: $page-bg;
+  background: $lcd-light;
   font-family: "Courier New", monospace;
+  color: $lcd-green;
 }
 
-.game{
-  width: 700px;
+.game {
+  width: 850px;
+  max-width: 95%;
 }
-
-.menu{
+.menu {
   display: flex;
   padding: 50px;
   min-height: 500px;
   flex-direction: column;
   background: $lcd-bg;
-  color: $lcd-dark;
-  border: 8px solid #111;
-  box-shadow: 0 0 0 5px #4b5545, 0 15px 40px rgb(0, 0, 0, 0.5);
+  color: $lcd-green;
+  border: 6px solid $lcd-green;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
 
-  &__header{
+  &__header {
     text-align: center;
     margin-bottom: 55px;
   }
-  &__title{
+
+  &__title {
     font-size: 50px;
     letter-spacing: 12px;
     line-height: 1;
   }
-  &__subtitle{
+
+  &__subtitle {
     font-size: 15px;
     margin-top: 10px;
     font-weight: bold;
     letter-spacing: 8px;
   }
+
   &__items {
     display: flex;
     flex-direction: column;
     width: 300px;
+    max-width: 100%;
     margin: auto;
     gap: 12px;
   }
 
-  &__item{
+  &__item {
     position: relative;
     padding: 10px 15px;
     border: none;
-    background-color: transparent;
-    color: $lcd-dark;
+    border-radius: 5px;
+    background: transparent;
+    color: $lcd-green;
     text-align: left;
-    font-family:"Courier New", monospace ;
+    font-family: inherit;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
 
-    .menu__arrow{
+    .menu__arrow {
       visibility: hidden;
       display: inline-block;
       width: 30px;
     }
 
-    &.active{
-      background-color: $lcd-dark;
-      color: $lcd-bg;
-      .menu__arrow{
-        visibility: visible;
-      }
-    }
-    &:hover{
-      background-color: $lcd-bg;
-      color: $lcd-dark;
-      .menu__arrow{
+    &.active,
+    &:hover {
+      background: $lcd-green;
+      color: $lcd-light;
+
+      .menu__arrow {
         visibility: visible;
       }
     }
   }
-  &__footer{
+
+  &__footer {
     margin-top: 55px;
     text-align: center;
     font-size: 13px;
     font-weight: bold;
   }
 }
-.level-menu {
+
+.level__menu {
   padding: 40px;
   text-align: center;
-  background: #a8b58b;
-  color: #1f291f;
+  background: $lcd-bg;
+  color: $lcd-green;
+  border: 6px solid $lcd-green;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
 
   h2 {
     margin-bottom: 30px;
+    letter-spacing: 3px;
   }
 
-  .level-list {
+  .level__list {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
 
     button {
-      padding: 10px;
+      padding: 12px;
       background: transparent;
       border: none;
-      color: #1f291f;
+      border-radius: 5px;
+      color: $lcd-green;
       font-family: inherit;
       font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
 
       &.active,
       &:hover {
-        background: #1f291f;
-        color: #a8b58b;
+        background: $lcd-green;
+        color: $lcd-light;
       }
     }
   }
@@ -128,42 +144,123 @@ body{
   #backLevelBtn {
     margin-top: 25px;
     padding: 10px 25px;
+    background: $lcd-cell;
+    border: 2px solid $lcd-green;
+    border-radius: 5px;
+    color: $lcd-green;
+    font-family: inherit;
+    font-weight: bold;
     cursor: pointer;
+
+    &:hover {
+      background: $lcd-green;
+      color: $lcd-light;
+    }
+  }
+
+  p {
+    margin-top: 20px;
+    font-size: 13px;
   }
 }
 
-.level-menu[hidden],
+#levelMenu[hidden],
 #mainMenu[hidden],
 #gameScreen[hidden] {
   display: none !important;
 }
-
-// scss board
-.game__board{
-  display: grid;
-  grid-template-columns: repeat(20,20px);
-  grid-template-rows: repeat(20, 20px);
-  width: 400px;
-  height: 400px;
-  margin: 0 auto;
+.game__screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 30px;
   background: $lcd-bg;
-  border: 3px solid $lcd-dark;
+  border: 3px solid $lcd-green;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
+}
+
+.game__info {
+  width: 720px;
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: $lcd-green;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.game__board {
+  display: grid;
+  grid-template-columns: repeat(24, 30px);
+  grid-template-rows: repeat(16, 30px);
+
+  width: 720px;
+  height: 480px;
+
+  margin: 0 auto;
+  background: $lcd-cell;
+  border: 3px solid $snake-color;
   box-sizing: content-box;
 }
+
 .cell {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
+  background: $lcd-cell;
+
+  &.grass-dark {
+    background: $grass-dark;
+  }
 
   &.snake {
-    background: $lcd-dark;
+    background: $snake-color;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 5px;
   }
 
   &.food {
-    background: #526b38;
+    background: $lcd-food;
     border-radius: 50%;
   }
 
   &.wall {
-    background: #46513c;
+    background: #638f41;
   }
+}
+
+
+#gameMessage {
+  color: $lcd-green;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.game__controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  button {
+    background: #c9e7a1;
+    color: $lcd-green;
+    border: 2px solid $lcd-green;
+    border-radius: 5px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: $lcd-green;
+      color: $lcd-light;
+    }
+  }
+}
+@media (max-height: 700px) {
+  .game__screen { padding-top: 16px; padding-bottom: 16px; gap: 10px; }
 }
