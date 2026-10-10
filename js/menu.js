@@ -1,5 +1,4 @@
-import { createBoard } from "./game/board.js";
-import {drawSnake} from "./game/snake.js";
+import { startGame } from "./game/game.js";
 const menuItems = document.querySelectorAll('.menu__item');
 
 let selectedIndex = 0;
@@ -11,6 +10,9 @@ function updateMenu() {
 }
 
 document.addEventListener("keydown", (event) => {
+    if (document.getElementById("mainMenu").hidden) {
+        return;
+    }
     if (event.key === "ArrowDown") {
         selectedIndex++;
 
@@ -49,8 +51,7 @@ function selectMenu(item) {
             document.getElementById("mainMenu").hidden = true;
             document.getElementById("gameScreen").hidden = false;
 
-            createBoard();
-            drawSnake();
+            startGame();
             break;
 
         case "level":
