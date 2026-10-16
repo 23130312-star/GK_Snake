@@ -10,7 +10,9 @@ let snake = [
     {x: 7, y: 5},
     {x: 6, y: 5}
 ];
-
+let food = {x: 0, y: 0};
+let score = 0;
+let foodCount = 0;
 
 for (let i = 0; i < rows * cols; i++) {
     let cell = document.createElement("div");
@@ -35,8 +37,8 @@ function changeLevel(level) {
     } else if (level === 6) {
         description.textContent = "Thử thách cuối";
     }
-    document.getElementById("score").textContent = 0;
-    document.getElementById("food-count").textContent = 0;
+    score = 0;
+    foodCount = 0;
 
     let button = document.querySelectorAll(".level");
     for (let i = 0; i < button.length; i++) {
@@ -75,10 +77,22 @@ function moveSnake() {
     if (head.y < 0) {
         head.y = rows - 1;
     }
+    let eatFood = false;
+    if (head.x === food.x && head.y === food.y) {
+        eatFood = true;
+    }
     snake.unshift(head);
-
-    snake.pop();
+    if (eatFood) {
+        score += 10;
+        foodCount++;
+        document.getElementById("score").textContent = score;
+        document.getElementById("food-count").textContent = foodCount;
+        createFood();
+    } else {
+        snake.pop();
+    }
     drawSnake();
+    drawFood();
 }
 
 document.addEventListener("keydown", function (event) {
@@ -104,4 +118,34 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-setInterval(moveSnake, 300);
+function createFood() {
+    let check = true;
+    while (check) {
+        food.x = Math.floor(Math.random() * cols);
+        food.y = Math.floor(Math.random() * rows);
+        check = false;
+        for (let i = 0; i < snake.length; i++) {
+            if (snake[i].x === food.x && snake[i].y === food.y) {
+                check = true;
+                break;
+            }
+        }
+    }
+}
+
+function drawFood() {
+    let cells = document.querySelectorAll(".cell");
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove("food");
+        cells[i].textContent = "";
+    }
+    let index = food.y * cols + food.x;
+    cells[index].classList.add("food");
+    cells[index].textContent = "🍎";
+}
+
+createFood();
+drawSnake();
+drawFood();
+
+setInterval(moveSnake, 400);

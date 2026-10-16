@@ -107,8 +107,15 @@ body {
   border: 1px solid #92c77a;
 }
 #game-board .snake {
-  background-color: #689c58;
+  background-color: deeppink;
   border: 1px solid #245224;
+  border-radius: 5px;
+}
+#game-board .food {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
 }
 
 .game-footer {
