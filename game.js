@@ -1,5 +1,7 @@
 const board = document.getElementById("game-board");
 
+let gameOver = false;
+let directionChanged = false;
 const cols = 16;
 const rows = 10;
 let currentLevel = 1;
@@ -45,6 +47,7 @@ function changeLevel(level) {
         button[i].classList.remove("active");
     }
     button[level - 1].classList.add("active");
+    resetGame();
 }
 
 function drawSnake() {
@@ -61,6 +64,10 @@ function drawSnake() {
 }
 
 function moveSnake() {
+    if (gameOver) {
+        return;
+    }
+    directionChanged = false;
     let head = {
         x: snake[0].x + dx,
         y: snake[0].y + dy
@@ -81,12 +88,25 @@ function moveSnake() {
     if (head.x === food.x && head.y === food.y) {
         eatFood = true;
     }
+    // level 1 : dung than
+    if (checkBody(head, eatFood)) {
+        gameOver = true;
+        alert("Game Over! Rắn đã đụng vào thân!")
+        return;
+    }
     snake.unshift(head);
     if (eatFood) {
         score += 10;
         foodCount++;
         document.getElementById("score").textContent = score;
         document.getElementById("food-count").textContent = foodCount;
+        if (foodCount >= 5) {
+            gameOver = true;
+            drawSnake();
+            drawFood();
+            alert("Chúc mừng! Bạn đã hoàn thành Level 1!");
+            return;
+        }
         createFood();
     } else {
         snake.pop();
@@ -95,28 +115,35 @@ function moveSnake() {
     drawFood();
 }
 
+
 document.addEventListener("keydown", function (event) {
-    if (event.key === "ArrowUp" ||
-        event.key === "ArrowDown" ||
-        event.key === "ArrowLeft" ||
-        event.key === "ArrowRight") {
+    if (event.key.startsWith("Arrow")) {
         event.preventDefault();
+    }
+
+    if (gameOver || directionChanged) {
+        return;
     }
 
     if (event.key === "ArrowUp" && dy !== 1) {
         dx = 0;
         dy = -1;
+        directionChanged = true;
     } else if (event.key === "ArrowDown" && dy !== -1) {
         dx = 0;
         dy = 1;
+        directionChanged = true;
     } else if (event.key === "ArrowLeft" && dx !== 1) {
         dx = -1;
         dy = 0;
+        directionChanged = true;
     } else if (event.key === "ArrowRight" && dx !== -1) {
         dx = 1;
         dy = 0;
+        directionChanged = true;
     }
 });
+
 
 function createFood() {
     let check = true;
@@ -144,8 +171,41 @@ function drawFood() {
     cells[index].textContent = "🍎";
 }
 
-createFood();
-drawSnake();
-drawFood();
+// Level 1:
+function checkBody(head, eatFood) {
+    let length = snake.length;
+    if (!eatFood) {
+        length -= 1;
+    }
+    for (let i = 0; i < length; i++) {
+        if (snake[i].x === head.x && snake[i].y === head.y) {
+            return true;
+        }
+    }
+    return false;
+}
 
-setInterval(moveSnake, 400);
+function resetGame() {
+    snake = [
+        {x: 8, y: 5},
+        {x: 7, y: 5},
+        {x: 6, y: 5}
+    ];
+
+    dx = 1;
+    dy = 0;
+    score = 0;
+    foodCount = 0;
+    gameOver = false;
+    directionChanged = false;
+
+    document.getElementById("score").textContent = 0;
+    document.getElementById("food-count").textContent = 0;
+
+    createFood();
+    drawSnake();
+    drawFood();
+}
+resetGame();
+
+setInterval(moveSnake, 300);
