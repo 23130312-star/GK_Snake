@@ -5,237 +5,113 @@
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f5faec;
-  font-family: "Courier New", monospace;
-  color: #355c32;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  color: #333;
 }
 
-.game {
-  width: 850px;
-  max-width: 95%;
+.container {
+  display: flex;
+  gap: 20px;
+  width: 95%;
+  margin: 30px auto;
 }
 
-.menu {
-  display: flex;
-  padding: 50px;
-  min-height: 500px;
-  flex-direction: column;
-  background: #e7f2d1;
-  color: #355c32;
-  border: 6px solid #355c32;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
+.sidebar {
+  width: 250px;
+  background-color: #e5e5e5;
+  padding: 20px;
 }
-.menu__header {
+.sidebar h1 {
   text-align: center;
-  margin-bottom: 55px;
-}
-.menu__title {
-  font-size: 50px;
-  letter-spacing: 12px;
-  line-height: 1;
-}
-.menu__subtitle {
-  font-size: 15px;
-  margin-top: 10px;
-  font-weight: bold;
-  letter-spacing: 8px;
-}
-.menu__items {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  max-width: 100%;
-  margin: auto;
-  gap: 12px;
-}
-.menu__item {
-  position: relative;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background: transparent;
-  color: #355c32;
-  text-align: left;
-  font-family: inherit;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.menu__item .menu__arrow {
-  visibility: hidden;
-  display: inline-block;
-  width: 30px;
-}
-.menu__item.active, .menu__item:hover {
-  background: #355c32;
-  color: #f5faec;
-}
-.menu__item.active .menu__arrow, .menu__item:hover .menu__arrow {
-  visibility: visible;
-}
-.menu__footer {
-  margin-top: 55px;
-  text-align: center;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.level__menu {
-  padding: 40px;
-  text-align: center;
-  background: #e7f2d1;
-  color: #355c32;
-  border: 6px solid #355c32;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
-}
-.level__menu h2 {
   margin-bottom: 30px;
-  letter-spacing: 3px;
+  font-size: 30px;
 }
-.level__menu .level__list {
+.sidebar .level-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 300px;
-  margin: 0 auto;
 }
-.level__menu .level__list button {
-  padding: 12px;
-  background: transparent;
-  border: none;
-  border-radius: 5px;
-  color: #355c32;
-  font-family: inherit;
+.sidebar .level-list .level {
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #aaa;
+  font-size: 16px;
+  cursor: pointer;
+}
+.sidebar .level-list .active {
+  background-color: #a9d88e;
+}
+
+.game-container {
+  flex: 1;
+  min-width: 0;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.game-info {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+.game-info .level-info {
+  flex: 2;
+  border-right: 1px solid #ddd;
+}
+.game-info .level-info h3 {
+  font-size: 18px;
+}
+.game-info .level-info p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+.game-info .score-info,
+.game-info .food-info {
+  flex: 1;
+  text-align: center;
+  border-right: 1px solid #ddd;
+}
+.game-info .score-info h4,
+.game-info .food-info h4 {
+  font-size: 12px;
+}
+.game-info .score-info p,
+.game-info .food-info p {
   font-size: 18px;
   font-weight: bold;
+  margin-top: 5px;
+}
+.game-info #pause-btn {
+  margin-left: 15px;
+  padding: 10px;
+  background-color: #e5e5e5;
+  border: 1px solid #aaa;
   cursor: pointer;
 }
-.level__menu .level__list button.active, .level__menu .level__list button:hover {
-  background: #355c32;
-  color: #f5faec;
-}
-.level__menu #backLevelBtn {
-  margin-top: 25px;
-  padding: 10px 25px;
-  background: #aad751;
-  border: 2px solid #355c32;
-  border-radius: 5px;
-  color: #355c32;
-  font-family: inherit;
-  font-weight: bold;
-  cursor: pointer;
-}
-.level__menu #backLevelBtn:hover {
-  background: #355c32;
-  color: #f5faec;
-}
-.level__menu p {
-  margin-top: 20px;
-  font-size: 13px;
-}
 
-#levelMenu[hidden],
-#mainMenu[hidden],
-#gameScreen[hidden] {
-  display: none !important;
-}
-
-.game__screen {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 30px;
-  background: #e7f2d1;
-  border: 3px solid #355c32;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
-}
-
-.game__info {
-  width: 720px;
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  color: #355c32;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.game__board {
+#game-board {
+  width: 800px;
+  height: 500px;
+  margin: 20px auto;
+  background-color: #a9d88e;
+  border: 2px solid #689c58;
   display: grid;
-  grid-template-columns: repeat(24, 30px);
-  grid-template-rows: repeat(16, 30px);
-  width: 720px;
-  height: 480px;
-  margin: 0 auto;
-  background: #aad751;
-  border: 3px solid #467c35;
-  box-sizing: content-box;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+#game-board .cell {
+  border: 1px solid #92c77a;
 }
 
-.cell {
-  width: 30px;
-  height: 30px;
-  background: #aad751;
-}
-.cell.grass-dark {
-  background: #a2d149;
-}
-.cell.snake {
-  background: #467c35;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 5px;
-}
-.cell.food {
-  background: #e74747;
-  border-radius: 50%;
-}
-.cell.wall {
-  background: #638f41;
-}
-
-#gameMessage {
-  color: #355c32;
-  font-size: 15px;
-  font-weight: bold;
+.game-footer {
   text-align: center;
+  font-size: 14px;
 }
-
-.game__controls {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-.game__controls button {
-  background: #c9e7a1;
-  color: #355c32;
-  border: 2px solid #355c32;
-  border-radius: 5px;
-  padding: 10px 18px;
-  font-family: inherit;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.game__controls button:hover {
-  background: #355c32;
-  color: #f5faec;
-}
-
-@media (max-height: 700px) {
-  .game__screen {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    gap: 10px;
-  }
+.game-footer p {
+  margin: 5px;
 }
 
 /*# sourceMappingURL=style.css.map */
