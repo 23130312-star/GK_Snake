@@ -48,7 +48,7 @@ body {
   flex: 1;
   min-width: 0;
   background-color: #f5f5f5;
-  padding: 20px;
+  padding: 10px;
 }
 
 .game-info {
@@ -96,7 +96,7 @@ body {
 #game-board {
   width: 800px;
   height: 500px;
-  margin: 20px auto;
+  margin: 10px auto;
   background-color: #a9d88e;
   border: 2px solid #689c58;
   display: grid;
@@ -105,6 +105,10 @@ body {
 }
 #game-board .cell {
   border: 1px solid #92c77a;
+}
+#game-board .snake {
+  background-color: #689c58;
+  border: 1px solid #245224;
 }
 
 .game-footer {
