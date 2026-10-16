@@ -1,266 +1,131 @@
-$lcd-bg: #e7f2d1;
-$lcd-green: #355c32;
-$lcd-light: #f5faec;
-$lcd-cell: #aad751;
-$lcd-food: #e74747;
-$grass-dark: #a2d149;
-$snake-color: #467c35;
+$white: #ffffff;
+$gray: #e5e5e5;
+$green: #a9d88e;
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
-  min-height: 100vh;
+  background-color: $white;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: $lcd-light;
-  font-family: "Courier New", monospace;
-  color: $lcd-green;
+  gap: 20px;
+  width: 95%;
+  margin: 30px auto;
 }
 
-.game {
-  width: 850px;
-  max-width: 95%;
-}
-.menu {
-  display: flex;
-  padding: 50px;
-  min-height: 500px;
-  flex-direction: column;
-  background: $lcd-bg;
-  color: $lcd-green;
-  border: 6px solid $lcd-green;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
+.sidebar {
+  width: 250px;
+  background-color: $gray;
+  padding: 20px;
 
-  &__header {
+  h1 {
     text-align: center;
-    margin-bottom: 55px;
-  }
-
-  &__title {
-    font-size: 50px;
-    letter-spacing: 12px;
-    line-height: 1;
-  }
-
-  &__subtitle {
-    font-size: 15px;
-    margin-top: 10px;
-    font-weight: bold;
-    letter-spacing: 8px;
-  }
-
-  &__items {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    max-width: 100%;
-    margin: auto;
-    gap: 12px;
-  }
-
-  &__item {
-    position: relative;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background: transparent;
-    color: $lcd-green;
-    text-align: left;
-    font-family: inherit;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-
-    .menu__arrow {
-      visibility: hidden;
-      display: inline-block;
-      width: 30px;
-    }
-
-    &.active,
-    &:hover {
-      background: $lcd-green;
-      color: $lcd-light;
-
-      .menu__arrow {
-        visibility: visible;
-      }
-    }
-  }
-
-  &__footer {
-    margin-top: 55px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: bold;
-  }
-}
-
-.level__menu {
-  padding: 40px;
-  text-align: center;
-  background: $lcd-bg;
-  color: $lcd-green;
-  border: 6px solid $lcd-green;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
-
-  h2 {
     margin-bottom: 30px;
-    letter-spacing: 3px;
+    font-size: 30px;
   }
 
-  .level__list {
+  .level-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 300px;
-    margin: 0 auto;
 
-    button {
-      padding: 12px;
-      background: transparent;
-      border: none;
-      border-radius: 5px;
-      color: $lcd-green;
-      font-family: inherit;
+    .level {
+      padding: 15px;
+      background-color: $white;
+      border: 1px solid #aaa;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .active {
+      background-color: $green;
+    }
+  }
+}
+
+.game-container {
+  flex: 1;
+  min-width: 0;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.game-info {
+  display: flex;
+  align-items: center;
+  background-color: $white;
+  padding: 15px;
+  border: 1px solid #ccc;
+
+  .level-info {
+    flex: 2;
+    border-right: 1px solid #ddd;
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  }
+
+  .score-info,
+  .food-info {
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid #ddd;
+
+    h4 {
+      font-size: 12px;
+    }
+
+    p {
       font-size: 18px;
       font-weight: bold;
-      cursor: pointer;
-
-      &.active,
-      &:hover {
-        background: $lcd-green;
-        color: $lcd-light;
-      }
+      margin-top: 5px;
     }
   }
 
-  #backLevelBtn {
-    margin-top: 25px;
-    padding: 10px 25px;
-    background: $lcd-cell;
-    border: 2px solid $lcd-green;
-    border-radius: 5px;
-    color: $lcd-green;
-    font-family: inherit;
-    font-weight: bold;
+  #pause-btn {
+    margin-left: 15px;
+    padding: 10px;
+    background-color: $gray;
+    border: 1px solid #aaa;
     cursor: pointer;
-
-    &:hover {
-      background: $lcd-green;
-      color: $lcd-light;
-    }
   }
+}
+
+#game-board {
+  width: 800px;
+  height: 500px;
+  margin: 20px auto;
+  background-color: $green;
+  border: 2px solid #689c58;
+
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+
+  .cell {
+    border: 1px solid #92c77a;
+  }
+}
+
+.game-footer {
+  text-align: center;
+  font-size: 14px;
 
   p {
-    margin-top: 20px;
-    font-size: 13px;
+    margin: 5px;
   }
-}
-
-#levelMenu[hidden],
-#mainMenu[hidden],
-#gameScreen[hidden] {
-  display: none !important;
-}
-.game__screen {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 30px;
-  background: $lcd-bg;
-  border: 3px solid $lcd-green;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(53, 75, 54, 0.15);
-}
-
-.game__info {
-  width: 720px;
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  color: $lcd-green;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.game__board {
-  display: grid;
-  grid-template-columns: repeat(24, 30px);
-  grid-template-rows: repeat(16, 30px);
-
-  width: 720px;
-  height: 480px;
-
-  margin: 0 auto;
-  background: $lcd-cell;
-  border: 3px solid $snake-color;
-  box-sizing: content-box;
-}
-
-.cell {
-  width: 30px;
-  height: 30px;
-  background: $lcd-cell;
-
-  &.grass-dark {
-    background: $grass-dark;
-  }
-
-  &.snake {
-    background: $snake-color;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 5px;
-  }
-
-  &.food {
-    background: $lcd-food;
-    border-radius: 50%;
-  }
-
-  &.wall {
-    background: #638f41;
-  }
-}
-
-
-#gameMessage {
-  color: $lcd-green;
-  font-size: 15px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.game__controls {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-
-  button {
-    background: #c9e7a1;
-    color: $lcd-green;
-    border: 2px solid $lcd-green;
-    border-radius: 5px;
-    padding: 10px 18px;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-
-    &:hover {
-      background: $lcd-green;
-      color: $lcd-light;
-    }
-  }
-}
-@media (max-height: 700px) {
-  .game__screen { padding-top: 16px; padding-bottom: 16px; gap: 10px; }
 }

@@ -3,87 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Snake</title>
-
-    <link rel="stylesheet" href="./style.css">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<main class="game">
+<div class="container">
 
-    <section class="menu" id="mainMenu">
+    <div class="sidebar">
+        <h1>SNAKE GAME</h1>
 
-        <div class="menu__header">
-            <h1 class="menu__title">SNAKE</h1>
-            <p class="menu__subtitle">CLASSIC</p>
+        <div class="level-list">
+            <button class="level active">Level 1</button>
+            <button class="level">Level 2</button>
+            <button class="level">Level 3</button>
+            <button class="level">Level 4</button>
+            <button class="level">Level 5</button>
+            <button class="level">Level 6</button>
+        </div>
+    </div>
+
+    <div class="game-container">
+
+
+        <div class="game-info">
+
+            <div class="level-info">
+                <h3 id="level-title">LEVEL 1</h3>
+                <p id="level-description">Xuyên tường</p>
+            </div>
+
+            <div class="score-info">
+                <h4>SCORE</h4>
+                <p id="score">0</p>
+            </div>
+
+            <div class="food-info">
+                <h4>MỤC TIÊU</h4>
+                <p>🍎 <span id="food-count">0</span>/5</p>
+            </div>
+
+            <button id="pause-btn">Ⅱ</button>
+
         </div>
 
-        <div class="menu__items">
 
-            <button class="menu__item active" data-action="start">
-                <span class="menu__arrow">▶</span>
-                NEW GAME
-            </button>
+        <div id="game-board"></div>
 
-            <button class="menu__item" data-action="level">
-                <span class="menu__arrow">▶</span>
-                LEVEL
-            </button>
-
-            <button class="menu__item" data-action="score">
-                <span class="menu__arrow">▶</span>
-                HIGH SCORE
-            </button>
-
-            <button class="menu__item" data-action="help">
-                <span class="menu__arrow">▶</span>
-                HOW TO PLAY
-            </button>
-
+        <div class="game-footer">
+            <p>Điều khiển: Phím mũi tên ← ↑ ↓ →</p>
+            <p>Ăn đủ 5 trái cây để qua màn</p>
         </div>
 
-        <div class="menu__footer">
-            ↑ ↓ SELECT &nbsp;&nbsp; ENTER OK
-        </div>
-    </section>
-    <section id="levelMenu" class="level__menu" hidden>
-        <h2>SELECT LEVEL</h2>
+    </div>
 
-        <div class="level__list">
-            <button data-level="1" class="active">▶ LEVEL 1</button>
-            <button data-level="2">LEVEL 2</button>
-            <button data-level="3">LEVEL 3</button>
-            <button data-level="4">LEVEL 4</button>
-            <button data-level="5">LEVEL 5</button>
-            <button data-level="6">LEVEL 6</button>
-        </div>
+</div>
 
-        <button id="backLevelBtn">◀ BACK</button>
-
-        <p>↑ ↓ SELECT - ENTER OK</p>
-    </section>
-    <section id="gameScreen" class="game__screen" hidden>
-        <div class="game__info">
-            <span>LEVEL: <strong id="level">1</strong></span>
-            <span class="food-info">
-    🍎            <strong id="foodCount">0</strong>/5</span>
-            <span>SCORE: <strong id="score">0</strong></span>
-        </div>
-        <div id="gameBoard" class="game__board" ></div>
-
-        <p id="gameMessage"></p>
-
-        <div class="game__controls">
-            <button id="pauseBtn">PAUSE</button>
-            <button id="restartBtn">RESTART</button>
-            <button id="backBtn">MENU</button>
-        </div>
-    </section>
-</main>
-
-<script type="module" src="./js/menu.js"></script>
-
+<script src="game.js"></script>
 </body>
 </html>
