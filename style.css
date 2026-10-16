@@ -50,6 +50,37 @@ body {
   background-color: #f5f5f5;
   padding: 10px;
 }
+.game-container #win-message {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid #aaaaaa;
+  padding: 30px;
+  width: 300px;
+  text-align: center;
+  border-radius: 10px;
+}
+.game-container #win-message h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+.game-container #win-message p {
+  margin-bottom: 15px;
+}
+.game-container #win-message button {
+  background-color: #a9d88e;
+  border: 1px solid #689c58;
+  padding: 12px 25px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+.game-container #win-message button:hover {
+  background-color: #91c875;
+}
 
 .game-info {
   display: flex;

@@ -24,6 +24,7 @@ for (let i = 0; i < rows * cols; i++) {
 
 function changeLevel(level) {
     currentLevel = level;
+    localStorage.setItem("currentLevel", level);
     document.getElementById("level-title").textContent = "Level: " + level;
     let description = document.getElementById("level-description");
     if (level === 1) {
@@ -111,8 +112,7 @@ function moveSnake() {
         if (head.x <= 0 || head.x >= cols - 1 ||
             head.y <= 0 || head.y >= rows - 1) {
 
-            gameOver = true;
-            alert("Game Over! Rắn đã đụng tường!");
+            resetGame();
             return;
         }
     }
@@ -122,8 +122,7 @@ function moveSnake() {
     }
     // level 1 : dung than
     if (checkBody(head, eatFood)) {
-        gameOver = true;
-        alert("Game Over! Rắn đã đụng vào thân!")
+        resetGame();
         return;
     }
     snake.unshift(head);
@@ -136,7 +135,10 @@ function moveSnake() {
             gameOver = true;
             drawSnake();
             drawFood();
-            alert("Chúc mừng! Bạn đã hoàn thành Level " + currentLevel + "!");
+            document.getElementById("win-text").textContent =
+                "Bạn đã hoàn thành Level " + currentLevel;
+            document.getElementById("final-score").textContent = score;
+            document.getElementById("win-message").style.display = "block";
             return;
         }
         createFood();
@@ -262,6 +264,21 @@ function drawMap() {
     }
 }
 
-resetGame();
+function nextLevel() {
+    document.getElementById("win-message").style.display = "none";
 
+    if (currentLevel < 6) {
+        changeLevel(currentLevel + 1);
+    } else {
+        changeLevel(1);
+    }
+}
+
+let savedLevel = localStorage.getItem("currentLevel");
+
+if (savedLevel !== null) {
+    changeLevel(Number(savedLevel));
+} else {
+    changeLevel(1);
+}
 setInterval(moveSnake, 300);
