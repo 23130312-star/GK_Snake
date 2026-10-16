@@ -48,18 +48,35 @@ function changeLevel(level) {
     }
     button[level - 1].classList.add("active");
     resetGame();
+    drawMap();
 }
 
 function drawSnake() {
     let cells = document.querySelectorAll(".cell");
     for (let i = 0; i < cells.length; i++) {
-        cells[i].classList.remove("snake");
+        cells[i].classList.remove(
+            "snake", "snake-head",
+            "up", "down", "left", "right"
+        );
     }
     for (let i = 0; i < snake.length; i++) {
         let x = snake[i].x;
         let y = snake[i].y;
         let index = y * cols + x;
         cells[index].classList.add("snake");
+        if (i === 0) {
+            cells[index].classList.add("snake-head");
+
+            if (dx === 1) {
+                cells[index].classList.add("right");
+            } else if (dx === -1) {
+                cells[index].classList.add("left");
+            } else if (dy === -1) {
+                cells[index].classList.add("up");
+            } else if (dy === 1) {
+                cells[index].classList.add("down");
+            }
+        }
     }
 }
 
@@ -72,17 +89,32 @@ function moveSnake() {
         x: snake[0].x + dx,
         y: snake[0].y + dy
     };
-    if (head.x >= cols) {
-        head.x = 0;
-    }
-    if (head.x < 0) {
-        head.x = cols - 1;
-    }
-    if (head.y >= rows) {
-        head.y = 0;
-    }
-    if (head.y < 0) {
-        head.y = rows - 1;
+    if (currentLevel === 1) {
+        // Level 1: Xuyên tường
+        if (head.x >= cols) {
+            head.x = 0;
+        }
+
+        if (head.x < 0) {
+            head.x = cols - 1;
+        }
+
+        if (head.y >= rows) {
+            head.y = 0;
+        }
+
+        if (head.y < 0) {
+            head.y = rows - 1;
+        }
+    } else if (currentLevel === 2) {
+        // Level 2: Đụng tường là thua
+        if (head.x <= 0 || head.x >= cols - 1 ||
+            head.y <= 0 || head.y >= rows - 1) {
+
+            gameOver = true;
+            alert("Game Over! Rắn đã đụng tường!");
+            return;
+        }
     }
     let eatFood = false;
     if (head.x === food.x && head.y === food.y) {
@@ -104,7 +136,7 @@ function moveSnake() {
             gameOver = true;
             drawSnake();
             drawFood();
-            alert("Chúc mừng! Bạn đã hoàn thành Level 1!");
+            alert("Chúc mừng! Bạn đã hoàn thành Level " + currentLevel + "!");
             return;
         }
         createFood();
@@ -157,6 +189,12 @@ function createFood() {
                 break;
             }
         }
+        if (currentLevel === 2) {
+            if (food.x === 0 || food.x === cols - 1 ||
+                food.y === 0 || food.y === rows - 1) {
+                check = true;
+            }
+        }
     }
 }
 
@@ -206,6 +244,24 @@ function resetGame() {
     drawSnake();
     drawFood();
 }
+
+function drawMap() {
+    let cells = document.querySelectorAll(".cell");
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove("wall");
+    }
+    if (currentLevel === 2) {
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (x === 0 || x === cols - 1 || y === 0 || y === rows - 1) {
+                    let index = y * cols + x;
+                    cells[index].classList.add("wall");
+                }
+            }
+        }
+    }
+}
+
 resetGame();
 
 setInterval(moveSnake, 300);
