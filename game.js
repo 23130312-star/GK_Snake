@@ -108,6 +108,19 @@ function isMovingWall(x, y) {
     return false;
 }
 
+function isWallPath(x, y) {
+    if (currentLevel !== 5) {
+        return false;
+    }
+    for (let i = 0; i < movingWalls.length; i++) {
+        let wall = movingWalls[i];
+        if (y === wall.y && x >= 1 && x <= cols - 2) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function drawMovingWall(x, y) {
     for (let i = 0; i < cells.length; i++) {
         cells[i].classList.remove('moving-wall');
@@ -242,6 +255,7 @@ function randomEmptyCell(avoidX, avoidY) {
         for (let x = 0; x < cols; x++) {
             if (!isWall(x, y) &&
                 !isMovingWall(x, y) &&
+                !isWallPath(x, y) &&
                 !onSnake(x, y) &&
                 !onClone(x, y) &&
                 !(x === avoidX && y === avoidY)) {
@@ -455,10 +469,10 @@ function resetGame() {
 }
 
 function checkBody(head, eatFood) {
-    let length = snake.length;
-    if (!eatFood) length--;
-    for (let i = 0; i < length; i++) {
-        if (snake[i].x === head.x && snake[i].y === head.y) return true;
+    for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === head.x && snake[i].y === head.y) {
+            return true;
+        }
     }
     return false;
 }
