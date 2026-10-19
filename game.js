@@ -14,6 +14,9 @@ let snake = [
     {x: 6, y: 5}
 ];
 let food = {x: 0, y: 0};
+let poisonFood = {x: -1, y: -1};
+let reverseControl = false;
+let poisonTimer = null;
 let score = 0;
 let foodCount = 0;
 
@@ -58,7 +61,7 @@ function drawSnake() {
     for (let i = 0; i < cells.length; i++) {
         cells[i].classList.remove(
             "snake", "snake-head",
-            "up", "down", "left", "right"
+            "up", "down", "left", "right", "poisoned"
         );
     }
     for (let i = 0; i < snake.length; i++) {
@@ -66,6 +69,9 @@ function drawSnake() {
         let y = snake[i].y;
         let index = y * cols + x;
         cells[index].classList.add("snake");
+        if (reverseControl) {
+            cells[index].classList.add("poisoned");
+        }
         if (i === 0) {
             cells[index].classList.add("snake-head");
 
@@ -118,28 +124,14 @@ function moveSnake() {
             return;
         }
     }
-
     if (currentLevel === 3) {
         if (head.x >= cols) {
             head.x = 0;
         }
-
         if (head.x < 0) {
             head.x = cols - 1;
         }
-
-        if (head.y >= rows) {
-            head.y = 0;
-        }
-
-        if (head.y < 0) {
-            head.y = rows - 1;
-        }
-
-        let index = head.y * cols + head.x;
-        let cells = document.querySelectorAll(".cell");
-
-        if (cells[index].classList.contains("wall")) {
+        if (head.y <= 0 || head.y >= rows - 1) {
             resetGame();
             return;
         }
@@ -148,6 +140,14 @@ function moveSnake() {
     let eatFood = false;
     if (head.x === food.x && head.y === food.y) {
         eatFood = true;
+    }
+    let eatPoisonFood = false;
+    if (currentLevel === 3) {
+        if (head.x === poisonFood.x &&
+            head.y === poisonFood.y) {
+
+            eatPoisonFood = true;
+        }
     }
     // level 1 : dung than
     if (checkBody(head, eatFood)) {
@@ -174,8 +174,15 @@ function moveSnake() {
     } else {
         snake.pop();
     }
+    if (eatPoisonFood) {
+        eatPoison();
+        createPoisonFood();
+    }
     drawSnake();
     drawFood();
+    if (currentLevel === 3) {
+        drawPoisonFood();
+    }
     directionChanged = false;
     if (nextDirection !== null) {
         if (nextDirection.x !== -dx || nextDirection.y !== -dy) {
@@ -216,13 +223,14 @@ document.addEventListener("keydown", function (event) {
         newDy = 0;
     }
 
+    if (currentLevel === 3 && reverseControl) {
+        newDx = -newDx;
+        newDy = -newDy;
+    }
     if (directionChanged) {
-        // Lưu phím cho lượt di chuyển tiếp theo
         nextDirection = {x: newDx, y: newDy};
         return;
     }
-
-    // Không cho quay đầu trực tiếp
     if (newDx === -dx && newDy === -dy) {
         return;
     }
@@ -257,6 +265,35 @@ function createFood() {
             if (cells[index].classList.contains("wall")) {
                 check = true;
             }
+            if (food.x === poisonFood.x &&
+                food.y === poisonFood.y) {
+                check = true;
+            }
+        }
+    }
+}
+
+function createPoisonFood() {
+    let check = true;
+    while (check) {
+        poisonFood.x = Math.floor(Math.random() * cols);
+        poisonFood.y = Math.floor(Math.random() * rows);
+        check = false;
+        for (let i = 0; i < snake.length; i++) {
+            if (poisonFood.x === snake[i].x &&
+                poisonFood.y === snake[i].y) {
+                check = true;
+            }
+        }
+        if (poisonFood.x === food.x &&
+            poisonFood.y === food.y) {
+            check = true;
+        }
+        let index = poisonFood.y * cols + poisonFood.x;
+        let cells = document.querySelectorAll(".cell");
+
+        if (cells[index].classList.contains("wall")) {
+            check = true;
         }
     }
 }
@@ -270,6 +307,32 @@ function drawFood() {
     let index = food.y * cols + food.x;
     cells[index].classList.add("food");
     cells[index].textContent = "🍎";
+}
+
+
+function drawPoisonFood() {
+    let cells = document.querySelectorAll(".cell");
+    for (let i = 0; i < cells.length; i++) {
+        if (cells[i].classList.contains("poison")) {
+            cells[i].classList.remove("poison");
+            cells[i].textContent = "";
+        }
+    }
+    if (currentLevel === 3) {
+        let index = poisonFood.y * cols + poisonFood.x;
+        cells[index].classList.add("poison");
+        cells[index].textContent = "☠️";
+    }
+}
+
+function eatPoison() {
+    reverseControl = true;
+    drawSnake();
+    clearTimeout(poisonTimer);
+    poisonTimer = setTimeout(function() {
+        reverseControl = false;
+        drawSnake();
+    }, 3000);
 }
 
 // Level 1:
@@ -303,10 +366,23 @@ function resetGame() {
 
     document.getElementById("score").textContent = 0;
     document.getElementById("food-count").textContent = 0;
-
+    clearTimeout(poisonTimer);
+    reverseControl = false;
+    let cells = document.querySelectorAll(".cell");
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove("poison");
+    }
+    poisonFood = {x: -1, y: -1};
     createFood();
+    if (currentLevel === 3) {
+        createPoisonFood();
+    }
     drawSnake();
     drawFood();
+    if (currentLevel === 3) {
+        drawPoisonFood();
+    }
+
 }
 
 function drawMap() {
@@ -329,13 +405,7 @@ function drawMap() {
     if (currentLevel === 3) {
         for (let y = 0; y < rows; y++) {
             for (let x = 0; x < cols; x++) {
-
-                if (
-                    (x === 3 && y >= 1 && y <= 3) ||
-                    (x === 12 && y >= 6 && y <= 8) ||
-                    (y === 2 && x >= 7 && x <= 9) ||
-                    (y === 7 && x >= 6 && x <= 8)
-                ) {
+                if (y === 0 || y === rows - 1) {
                     let index = y * cols + x;
                     cells[index].classList.add("wall");
                 }

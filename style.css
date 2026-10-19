@@ -142,11 +142,20 @@ body {
   border: 1px solid #245224;
   border-radius: 5px;
 }
+#game-board .snake.poisoned {
+  background-color: #9146b5;
+}
 #game-board .food {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 30px;
+}
+#game-board .poison {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
 }
 #game-board .wall {
   background-color: brown;
