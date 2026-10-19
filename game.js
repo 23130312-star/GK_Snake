@@ -27,7 +27,11 @@ let cloneShowTime = 5;
 let cloneHideTime = 5;
 let cloneDelayStep = 12;
 let cloneSafeMoves = 0;
-
+let movingWalls = [
+    {x: 3, y: 3, direction: 1},
+    {x: 10, y: 7, direction: -1}
+];
+let wallStep = 0;
 for (let i = 0; i < rows * cols; i++) {
     let cell = document.createElement('div');
     cell.classList.add('cell');
@@ -62,7 +66,7 @@ function changeLevel(level) {
     localStorage.setItem('currentLevel', level);
     document.getElementById('level-title').textContent = 'Level: ' + level;
 
-    let descriptions = ['Xuyên tường', 'Đụng tường', 'Trái độc', 'Rắn nhân bản', 'Thử thách thức ăn', 'Thử thách cuối'];
+    let descriptions = ['Xuyên tường', 'Đụng tường', 'Trái độc', 'Rắn nhân bản', 'Thử thách thức ăn', 'Sương mù'];
     document.getElementById('level-description').textContent = descriptions[level - 1];
 
     let buttons = document.querySelectorAll('.level');
@@ -85,7 +89,57 @@ function isWall(x, y) {
     if (currentLevel === 4) {
         return y === 0 || y === rows - 1;
     }
+    if (currentLevel === 5) {
+        return y === 0 || y === rows - 1;
+    }
     return false;
+}
+
+function isMovingWall(x, y) {
+    if (currentLevel !== 5) {
+        return false;
+    }
+    for (let i = 0; i < movingWalls.length; i++) {
+        let movingWall = movingWalls[i];
+        if (y === movingWall.y && x >= movingWall.x && x < movingWall.x + 3) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function drawMovingWall(x, y) {
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('moving-wall');
+    }
+    if (currentLevel !== 5) {
+        return;
+    }
+    for (let i = 0; i < movingWalls.length; i++) {
+        let movingWall = movingWalls[i];
+        for (let j = 0; j < 3; j++) {
+            let index = movingWall.y * cols + movingWall.x + j;
+            cells[index].classList.add('moving-wall');
+        }
+    }
+}
+
+function moveWall() {
+    if (currentLevel !== 5) {
+        return;
+    }
+    for (let i = 0; i < movingWalls.length; i++) {
+        let wall = movingWalls[i];
+        wall.x += wall.direction;
+        if (wall.x <= 1) {
+            wall.x = 1;
+            wall.direction = 1;
+        }
+        if (wall.x >= cols - 4) {
+            wall.x = cols - 4;
+            wall.direction = -1;
+        }
+    }
 }
 
 function drawMap() {
@@ -187,6 +241,7 @@ function randomEmptyCell(avoidX, avoidY) {
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             if (!isWall(x, y) &&
+                !isMovingWall(x, y) &&
                 !onSnake(x, y) &&
                 !onClone(x, y) &&
                 !(x === avoidX && y === avoidY)) {
@@ -261,10 +316,44 @@ function drawFood() {
     }
 }
 
+function applyDarkLevel() {
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('dark-hide', 'dark-light', 'dark-food');
+    }
+
+    if (currentLevel !== 6) return;
+
+    // Che toàn bộ bản đồ
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.add('dark-hide');
+    }
+
+    // Chừa vùng sáng 3x3 quanh đầu rắn
+    let head = snake[0];
+    for (let y = head.y - 1; y <= head.y + 1; y++) {
+        for (let x = head.x - 1; x <= head.x + 1; x++) {
+            if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                let index = y * cols + x;
+                cells[index].classList.remove('dark-hide');
+                cells[index].classList.add('dark-light');
+            }
+        }
+    }
+
+    // Táo vẫn sáng dù nằm ngoài vùng nhìn
+    if (food.x >= 0) {
+        let index = food.y * cols + food.x;
+        cells[index].classList.remove('dark-hide');
+        cells[index].classList.add('dark-food');
+    }
+}
+
 function drawGame() {
     drawSnake();
     drawCloneSnake();
     drawFood();
+    drawMovingWall();
+    applyDarkLevel();
 }
 
 function resetGame() {
@@ -301,6 +390,12 @@ function resetGame() {
             y: snake[i].y
         });
     }
+    movingWalls = [
+        {x: 3, y: 3, direction: 1},
+        {x: 10, y: 7, direction: -1}
+    ];
+
+    wallStep = 0;
     createFood();
     if (currentLevel === 3) {
         createPoisonFood();
@@ -368,13 +463,23 @@ function moveSnake() {
             resetGame();
             return;
         }
+    } else if (currentLevel === 5) {
+        wrapHorizontal(head);
+        if (head.y <= 0 || head.y >= rows - 1) {
+            resetGame();
+            return;
+        }
+        if (isMovingWall(head.x, head.y)) {
+            resetGame();
+            return;
+        }
     } else {
+        // Level 6 xuyên 4 mép bảng
         wrapAll(head);
     }
 
     let eatFood = head.x === food.x && head.y === food.y;
     let eatPoisonFood = currentLevel === 3 && head.x === poisonFood.x && head.y === poisonFood.y;
-
     if (checkBody(head, eatFood)) {
         resetGame();
         return;
@@ -412,8 +517,23 @@ function moveSnake() {
         createPoisonFood();
     }
     if (eatFood && foodCount < 5) createFood();
+    if (currentLevel === 5) {
+        wallStep++;
+        if (wallStep >= 3) {
+            wallStep = 0;
+            moveWall();
+            for (let i = 0; i < snake.length; i++) {
+                if (isMovingWall(snake[i].x, snake[i].y)) {
+                    resetGame();
+                    return;
+                }
+            }
+            if (isMovingWall(food.x, food.y)) {
+                createFood();
+            }
+        }
+    }
     drawGame();
-
     if (foodCount >= 5) {
         finishLevel();
         return;

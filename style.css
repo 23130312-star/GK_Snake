@@ -171,6 +171,10 @@ body {
   background-color: brown;
   border: #aaaaaa 1px solid;
 }
+#game-board .moving-wall {
+  background-color: cadetblue;
+  border: #aaaaaa 1px solid;
+}
 #game-board .snake-head {
   position: relative;
 }
