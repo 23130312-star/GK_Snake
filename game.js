@@ -348,6 +348,57 @@ function applyDarkLevel() {
     }
 }
 
+function applyDarkLevel() {
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('dark-hide', 'dark-light');
+    }
+    if (currentLevel !== 6) return;
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].classList.add('dark-hide');
+    }
+    let head = snake[0];
+    for (let i = -1; i <= 1; i++) {
+        let x = head.x + dx;
+        let y = head.y + dy;
+        if (dx !== 0) {
+            y += i;
+        } else {
+            x += i;
+        }
+        if (x < 0) x = cols - 1;
+        if (x >= cols) x = 0;
+        if (y < 0) y = rows - 1;
+        if (y >= rows) y = 0;
+        let index = y * cols + x;
+        cells[index].classList.remove('dark-hide');
+        cells[index].classList.add('dark-light');
+    }
+    for (let i = -1; i <= 1; i += 2) {
+        let x = head.x;
+        let y = head.y;
+        if (dx !== 0) {
+            y += i;
+        } else {
+            x += i;
+        }
+        if (x < 0) x = cols - 1;
+        if (x >= cols) x = 0;
+        if (y < 0) y = rows - 1;
+        if (y >= rows) y = 0;
+        let index = y * cols + x;
+        cells[index].classList.remove('dark-hide');
+        cells[index].classList.add('dark-light');
+    }
+    for (let i = 0; i < snake.length; i++) {
+        let index = snake[i].y * cols + snake[i].x;
+        cells[index].classList.remove('dark-hide');
+    }
+    if (food.x >= 0) {
+        let foodIndex = food.y * cols + food.x;
+        cells[foodIndex].classList.remove('dark-hide');
+    }
+}
+
 function drawGame() {
     drawSnake();
     drawCloneSnake();
@@ -473,8 +524,9 @@ function moveSnake() {
             resetGame();
             return;
         }
+    } else if (currentLevel === 6) {
+        wrapAll(head);
     } else {
-        // Level 6 xuyên 4 mép bảng
         wrapAll(head);
     }
 

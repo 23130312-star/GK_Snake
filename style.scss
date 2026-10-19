@@ -196,9 +196,40 @@ body {
     background-color: brown;
     border: #aaaaaa 1px solid;
   }
-  .moving-wall{
+
+  .moving-wall {
     background-color: cadetblue;
     border: #aaaaaa 1px solid;
+  }
+
+  .cell.dark-hide {
+    background-color: #aaaaaa !important;
+    border: #aaaaaa 1px solid;
+    color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .cell.dark-light {
+    background-color: #b3d49b;
+    border-color: #8aaf7d;
+  }
+
+  .cell.dark-light.snake-head {
+    background-color: deeppink;
+  }
+
+  .cell.snake:not(.dark-hide) {
+    background-color: deeppink !important;
+  }
+
+  .cell.snake-head:not(.dark-hide) {
+    background-color: deeppink !important;
+    box-shadow: 0 0 10px deeppink;
+  }
+
+  .cell.food {
+    color: white;
+    text-shadow: 0 0 12px red;
   }
 
   .snake-head {
