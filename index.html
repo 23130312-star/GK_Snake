@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="container">
-
     <div class="sidebar">
         <h1>SNAKE GAME</h1>
-
         <div class="level-list">
             <button class="level active" onclick="changeLevel(1)">Level 1</button>
             <button class="level" onclick="changeLevel(2)">Level 2</button>
@@ -22,37 +19,26 @@
             <button class="level" onclick="changeLevel(6)">Level 6</button>
         </div>
     </div>
-
     <div class="game-container">
-
-
         <div class="game-info">
-
             <div class="level-info">
-                <h3 id="level-title">Level: 3</h3>
-                <p id="level-description">Chướng ngại vật</p>
+                <h3 id="level-title">Level: 1</h3>
+                <p id="level-description">Xuyên tường</p>
             </div>
-
             <div class="score-info">
                 <h4>SCORE</h4>
                 <p id="score">0</p>
             </div>
-
             <div class="time-info">
                 <h4>TIME</h4>
                 <p id="time">01:30</p>
             </div>
-
             <div class="food-info">
                 <h4>MỤC TIÊU</h4>
                 <p>🍎 <span id="food-count">0</span>/5</p>
             </div>
-
             <button id="pause-btn">Ⅱ</button>
-
         </div>
-
-
         <div id="game-board"></div>
         <div id="win-message">
             <h2>LEVEL COMPLETED!</h2>
@@ -67,11 +53,8 @@
             <p>Điều khiển: Phím mũi tên ← ↑ ↓ →</p>
             <p>Ăn đủ 5 trái cây để qua màn</p>
         </div>
-
     </div>
-
 </div>
-
 <script src="game.js"></script>
 </body>
 </html>
