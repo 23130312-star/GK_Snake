@@ -164,11 +164,22 @@ body {
     border-radius: 5px;
   }
 
+  .snake.poisoned {
+    background-color: #9146b5;
+  }
+
   .food {
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 30px;
+  }
+
+  .poison {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
   }
 
   .wall {
