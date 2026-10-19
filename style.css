@@ -175,6 +175,30 @@ body {
   background-color: cadetblue;
   border: #aaaaaa 1px solid;
 }
+#game-board .cell.dark-hide {
+  background-color: #aaaaaa !important;
+  border: #aaaaaa 1px solid;
+  color: transparent !important;
+  box-shadow: none !important;
+}
+#game-board .cell.dark-light {
+  background-color: #b3d49b;
+  border-color: #8aaf7d;
+}
+#game-board .cell.dark-light.snake-head {
+  background-color: deeppink;
+}
+#game-board .cell.snake:not(.dark-hide) {
+  background-color: deeppink !important;
+}
+#game-board .cell.snake-head:not(.dark-hide) {
+  background-color: deeppink !important;
+  box-shadow: 0 0 10px deeppink;
+}
+#game-board .cell.food {
+  color: white;
+  text-shadow: 0 0 12px red;
+}
 #game-board .snake-head {
   position: relative;
 }
