@@ -49,6 +49,7 @@ body {
   min-width: 0;
   background-color: #f5f5f5;
   padding: 10px;
+  position: relative;
 }
 .game-container #win-message {
   display: none;
@@ -101,16 +102,19 @@ body {
   margin-top: 5px;
 }
 .game-info .score-info,
+.game-info .time-info,
 .game-info .food-info {
   flex: 1;
   text-align: center;
   border-right: 1px solid #ddd;
 }
 .game-info .score-info h4,
+.game-info .time-info h4,
 .game-info .food-info h4 {
   font-size: 12px;
 }
 .game-info .score-info p,
+.game-info .time-info p,
 .game-info .food-info p {
   font-size: 18px;
   font-weight: bold;
@@ -139,8 +143,14 @@ body {
 }
 #game-board .snake {
   background-color: deeppink;
-  border: 1px solid #245224;
   border-radius: 5px;
+}
+#game-board .clone-snake {
+  background-color: #f39c12;
+  border-radius: 5px;
+}
+#game-board .clone-head {
+  background-color: #e67e22;
 }
 #game-board .snake.poisoned {
   background-color: #9146b5;
