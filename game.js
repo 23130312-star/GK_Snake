@@ -3,6 +3,7 @@ const cols = 16;
 const rows = 10;
 const cells = [];
 
+let paused = false;
 let time = 90;
 let timeInterval = null;
 let currentLevel = 1;
@@ -27,11 +28,9 @@ let cloneShowTime = 5;
 let cloneHideTime = 5;
 let cloneDelayStep = 12;
 let cloneSafeMoves = 0;
-let movingWalls = [
-    {x: 3, y: 3, direction: 1},
-    {x: 10, y: 7, direction: -1}
-];
-let wallStep = 0;
+let iceTiles = [];
+let arrowTiles = [];
+let slideSteps = 0;
 for (let i = 0; i < rows * cols; i++) {
     let cell = document.createElement('div');
     cell.classList.add('cell');
@@ -42,7 +41,7 @@ for (let i = 0; i < rows * cols; i++) {
 function startTimer() {
     clearInterval(timeInterval);
     timeInterval = setInterval(function () {
-        if (gameOver) {
+        if (gameOver || paused) {
             clearInterval(timeInterval);
             return;
         }
@@ -66,7 +65,14 @@ function changeLevel(level) {
     localStorage.setItem('currentLevel', level);
     document.getElementById('level-title').textContent = 'Level: ' + level;
 
-    let descriptions = ['Xuyên tường', 'Đụng tường', 'Trái độc', 'Rắn nhân bản', 'Thử thách thức ăn', 'Sương mù'];
+    let descriptions = [
+        'Xuyên tường',
+        'Đụng tường',
+        'Trái độc',
+        'Rắn nhân bản',
+        'Tường di chuyển',
+        'Sương mù'
+    ];
     document.getElementById('level-description').textContent = descriptions[level - 1];
 
     let buttons = document.querySelectorAll('.level');
@@ -77,6 +83,17 @@ function changeLevel(level) {
 
     drawMap();
     resetGame();
+}
+
+function isLevel6Wall(x, y) {
+    let topWall = y === 0 && x !== 3 && x !== 12;
+    let bottomWall = y === rows - 1 && x !== 3 && x !== 12;
+    let leftWall = x === 0 && y !== 2 && y !== 7;
+    let rightWall = x === cols - 1 && y !== 2 && y !== 7;
+    let middleWall = y === 4 &&
+        x >= 3 && x <= 12 &&
+        x !== 7 && x !== 8;
+    return topWall || bottomWall || leftWall || rightWall || middleWall;
 }
 
 function isWall(x, y) {
@@ -92,66 +109,80 @@ function isWall(x, y) {
     if (currentLevel === 5) {
         return y === 0 || y === rows - 1;
     }
+    if (currentLevel === 6) {
+        return isLevel6Wall(x, y);
+    }
     return false;
 }
 
-function isMovingWall(x, y) {
-    if (currentLevel !== 5) {
-        return false;
+function createSpecialTiles() {
+    iceTiles = [];
+    arrowTiles = [];
+    if (currentLevel !== 5) return;
+    let emptyCells = [];
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            if (!isWall(x, y) &&
+                !onSnake(x, y) &&
+                !(food.x === x && food.y === y)) {
+                emptyCells.push({x: x, y: y});
+            }
+        }
     }
-    for (let i = 0; i < movingWalls.length; i++) {
-        let movingWall = movingWalls[i];
-        if (y === movingWall.y && x >= movingWall.x && x < movingWall.x + 3) {
+    let directions = [
+        {dx: 0, dy: -1, icon: '↑'},
+        {dx: 0, dy: 1, icon: '↓'},
+        {dx: -1, dy: 0, icon: '←'},
+        {dx: 1, dy: 0, icon: '→'}
+    ];
+    for (let i = 0; i < 6; i++) {
+        let index = Math.floor(Math.random() * emptyCells.length);
+        let position = emptyCells.splice(index, 1)[0];
+        if (i < 3) {
+            iceTiles.push(position);
+        } else {
+            let direction = directions[Math.floor(Math.random() * 4)];
+            arrowTiles.push({
+                x: position.x,
+                y: position.y,
+                dx: direction.dx,
+                dy: direction.dy,
+                icon: direction.icon
+            });
+        }
+    }
+}
+
+function isSpecialTile(x, y) {
+    if (currentLevel !== 5) return false;
+    for (let i = 0; i < iceTiles.length; i++) {
+        if (iceTiles[i].x === x && iceTiles[i].y === y) {
+            return true;
+        }
+    }
+    for (let i = 0; i < arrowTiles.length; i++) {
+        if (arrowTiles[i].x === x && arrowTiles[i].y === y) {
             return true;
         }
     }
     return false;
 }
 
-function isWallPath(x, y) {
-    if (currentLevel !== 5) {
-        return false;
-    }
-    for (let i = 0; i < movingWalls.length; i++) {
-        let wall = movingWalls[i];
-        if (y === wall.y && x >= 1 && x <= cols - 2) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function drawMovingWall(x, y) {
+function drawSpecialTiles() {
     for (let i = 0; i < cells.length; i++) {
-        cells[i].classList.remove('moving-wall');
+        cells[i].classList.remove('ice-tile', 'arrow-tile');
     }
-    if (currentLevel !== 5) {
-        return;
+    if (currentLevel !== 5) return;
+    for (let i = 0; i < iceTiles.length; i++) {
+        let tile = iceTiles[i];
+        let index = tile.y * cols + tile.x;
+        cells[index].classList.add('ice-tile');
     }
-    for (let i = 0; i < movingWalls.length; i++) {
-        let movingWall = movingWalls[i];
-        for (let j = 0; j < 3; j++) {
-            let index = movingWall.y * cols + movingWall.x + j;
-            cells[index].classList.add('moving-wall');
-        }
-    }
-}
-
-function moveWall() {
-    if (currentLevel !== 5) {
-        return;
-    }
-    for (let i = 0; i < movingWalls.length; i++) {
-        let wall = movingWalls[i];
-        wall.x += wall.direction;
-        if (wall.x <= 1) {
-            wall.x = 1;
-            wall.direction = 1;
-        }
-        if (wall.x >= cols - 4) {
-            wall.x = cols - 4;
-            wall.direction = -1;
-        }
+    for (let i = 0; i < arrowTiles.length; i++) {
+        let tile = arrowTiles[i];
+        let index = tile.y * cols + tile.x;
+        cells[index].classList.add('arrow-tile');
+        cells[index].textContent = tile.icon;
     }
 }
 
@@ -254,8 +285,7 @@ function randomEmptyCell(avoidX, avoidY) {
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             if (!isWall(x, y) &&
-                !isMovingWall(x, y) &&
-                !isWallPath(x, y) &&
+                !isSpecialTile(x, y) &&
                 !onSnake(x, y) &&
                 !onClone(x, y) &&
                 !(x === avoidX && y === avoidY)) {
@@ -332,38 +362,6 @@ function drawFood() {
 
 function applyDarkLevel() {
     for (let i = 0; i < cells.length; i++) {
-        cells[i].classList.remove('dark-hide', 'dark-light', 'dark-food');
-    }
-
-    if (currentLevel !== 6) return;
-
-    // Che toàn bộ bản đồ
-    for (let i = 0; i < cells.length; i++) {
-        cells[i].classList.add('dark-hide');
-    }
-
-    // Chừa vùng sáng 3x3 quanh đầu rắn
-    let head = snake[0];
-    for (let y = head.y - 1; y <= head.y + 1; y++) {
-        for (let x = head.x - 1; x <= head.x + 1; x++) {
-            if (x >= 0 && x < cols && y >= 0 && y < rows) {
-                let index = y * cols + x;
-                cells[index].classList.remove('dark-hide');
-                cells[index].classList.add('dark-light');
-            }
-        }
-    }
-
-    // Táo vẫn sáng dù nằm ngoài vùng nhìn
-    if (food.x >= 0) {
-        let index = food.y * cols + food.x;
-        cells[index].classList.remove('dark-hide');
-        cells[index].classList.add('dark-food');
-    }
-}
-
-function applyDarkLevel() {
-    for (let i = 0; i < cells.length; i++) {
         cells[i].classList.remove('dark-hide', 'dark-light');
     }
     if (currentLevel !== 6) return;
@@ -385,7 +383,9 @@ function applyDarkLevel() {
         if (y >= rows) y = 0;
         let index = y * cols + x;
         cells[index].classList.remove('dark-hide');
-        cells[index].classList.add('dark-light');
+        if (!isWall(x, y)) {
+            cells[index].classList.add('dark-light');
+        }
     }
     for (let i = -1; i <= 1; i += 2) {
         let x = head.x;
@@ -417,7 +417,7 @@ function drawGame() {
     drawSnake();
     drawCloneSnake();
     drawFood();
-    drawMovingWall();
+    drawSpecialTiles();
     applyDarkLevel();
 }
 
@@ -432,6 +432,8 @@ function resetGame() {
     dy = 0;
     score = 0;
     foodCount = 0;
+    paused = false;
+    document.getElementById('pause-btn').textContent = 'Ⅱ';
     snake = [
         {x: 8, y: 5},
         {x: 7, y: 5},
@@ -455,13 +457,11 @@ function resetGame() {
             y: snake[i].y
         });
     }
-    movingWalls = [
-        {x: 3, y: 3, direction: 1},
-        {x: 10, y: 7, direction: -1}
-    ];
-
-    wallStep = 0;
+    iceTiles = [];
+    arrowTiles = [];
+    slideSteps = 0;
     createFood();
+    createSpecialTiles();
     if (currentLevel === 3) {
         createPoisonFood();
     }
@@ -506,8 +506,9 @@ function finishLevel() {
 }
 
 function moveSnake() {
-    if (gameOver) return;
-
+    if (gameOver || paused) return;
+    let wasSliding = currentLevel === 5 && slideSteps > 0;
+    let turnedByArrow = false;
     let head = {x: snake[0].x + dx, y: snake[0].y + dy};
     if (currentLevel === 1) {
         wrapAll(head);
@@ -534,12 +535,15 @@ function moveSnake() {
             resetGame();
             return;
         }
-        if (isMovingWall(head.x, head.y)) {
+    } else if (currentLevel === 6) {
+        if (head.x < 0) head.x = cols - 1;
+        if (head.x >= cols) head.x = 0;
+        if (head.y < 0) head.y = rows - 1;
+        if (head.y >= rows) head.y = 0;
+        if (isWall(head.x, head.y)) {
             resetGame();
             return;
         }
-    } else if (currentLevel === 6) {
-        wrapAll(head);
     } else {
         wrapAll(head);
     }
@@ -568,10 +572,8 @@ function moveSnake() {
     if (snakeHistory.length > 200) {
         snakeHistory.shift();
     }
-
     updateCloneState();
     updateCloneSnake();
-
     if (cloneSafeMoves > 0) {
         cloneSafeMoves--;
     } else if (checkCloneCollision()) {
@@ -582,32 +584,57 @@ function moveSnake() {
         eatPoison();
         createPoisonFood();
     }
-    if (eatFood && foodCount < 5) createFood();
+    if (foodCount >= 5) {
+        drawGame();
+        finishLevel();
+        return;
+    }
+    if (eatFood) {
+        createFood();
+        if (currentLevel === 5) {
+            createSpecialTiles();
+        }
+    }
     if (currentLevel === 5) {
-        wallStep++;
-        if (wallStep >= 3) {
-            wallStep = 0;
-            moveWall();
-            for (let i = 0; i < snake.length; i++) {
-                if (isMovingWall(snake[i].x, snake[i].y)) {
-                    resetGame();
-                    return;
+        if (wasSliding) {
+            slideSteps--;
+        } else {
+            for (let i = 0; i < iceTiles.length; i++) {
+                if (head.x === iceTiles[i].x &&
+                    head.y === iceTiles[i].y) {
+                    slideSteps = 3;
+                    nextDirection = null;
+                    break;
                 }
             }
-            if (isMovingWall(food.x, food.y)) {
-                createFood();
+            if (slideSteps === 0) {
+                for (let i = 0; i < arrowTiles.length; i++) {
+                    let tile = arrowTiles[i];
+                    if (head.x === tile.x && head.y === tile.y) {
+                        if (tile.dx !== -dx || tile.dy !== -dy) {
+                            dx = tile.dx;
+                            dy = tile.dy;
+                            nextDirection = null;
+                            directionChanged = true;
+                            turnedByArrow = true;
+                        }
+                        break;
+                    }
+                }
             }
         }
     }
     drawGame();
-    if (foodCount >= 5) {
-        finishLevel();
+    if (turnedByArrow) return;
+    if (currentLevel === 5 && slideSteps > 0) {
+        nextDirection = null;
+        directionChanged = false;
         return;
     }
-
     directionChanged = false;
     if (nextDirection !== null) {
-        if (nextDirection.x !== -dx || nextDirection.y !== -dy) {
+        if (nextDirection.x !== -dx ||
+            nextDirection.y !== -dy) {
             dx = nextDirection.x;
             dy = nextDirection.y;
             directionChanged = true;
@@ -630,9 +657,11 @@ document.addEventListener('keydown', function (event) {
     } else {
         return;
     }
-
     event.preventDefault();
-    if (gameOver) return;
+    if (gameOver || paused) return;
+    if (currentLevel === 5 && slideSteps > 0) {
+        return;
+    }
     if (currentLevel === 3 && reverseControl) {
         newDx = -newDx;
         newDy = -newDy;
@@ -654,5 +683,10 @@ function nextLevel() {
 
 let savedLevel = Number(localStorage.getItem('currentLevel'));
 if (savedLevel >= 1 && savedLevel <= 6) changeLevel(savedLevel); else changeLevel(1);
+document.getElementById('pause-btn').addEventListener('click', function () {
+    if (gameOver) return;
 
+    paused = !paused;
+    this.textContent = paused ? '▶' : 'Ⅱ';
+});
 setInterval(moveSnake, 200);
