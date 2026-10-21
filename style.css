@@ -146,11 +146,11 @@ body {
   border-radius: 5px;
 }
 #game-board .clone-snake {
-  background-color: #f39c12;
+  background-color: #83c9f3;
   border-radius: 5px;
 }
 #game-board .clone-head {
-  background-color: #e67e22;
+  background-color: aquamarine;
 }
 #game-board .snake.poisoned {
   background-color: #9146b5;
@@ -167,10 +167,6 @@ body {
   align-items: center;
   font-size: 28px;
 }
-#game-board .wall {
-  background-color: brown;
-  border: #aaaaaa 1px solid;
-}
 #game-board .ice-tile {
   background-color: #83c9f3;
   border: 2px solid #4ca5dc;
@@ -184,6 +180,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#game-board .cell.speed-tile {
+  background-color: #ffdf70;
+  border: 2px solid #efab34;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
 }
 #game-board .cell.snake {
   background-color: deeppink;
@@ -204,7 +208,7 @@ body {
 }
 #game-board .cell.wall:not(.dark-hide) {
   background-color: brown;
-  border: 1px solid #804020;
+  border: 1px solid #83c9f3;
 }
 #game-board .cell.dark-light.snake-head {
   background-color: deeppink;
@@ -214,13 +218,9 @@ body {
 }
 #game-board .cell.snake-head:not(.dark-hide):not(.poisoned) {
   background-color: deeppink !important;
-  box-shadow: 0 0 10px deeppink;
 }
 #game-board .cell.snake.poisoned {
   background-color: #9146b5 !important;
-}
-#game-board .cell.snake-head.poisoned {
-  box-shadow: 0 0 10px #9146b5;
 }
 #game-board .cell.food {
   color: white;
