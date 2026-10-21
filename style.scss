@@ -197,9 +197,29 @@ body {
     border: #aaaaaa 1px solid;
   }
 
-  .moving-wall {
-    background-color: cadetblue;
-    border: #aaaaaa 1px solid;
+  .ice-tile {
+    background-color: #83c9f3;
+    border: 2px solid #4ca5dc;
+  }
+
+  .arrow-tile {
+    background-color: #f5d16c;
+    border: 2px solid #d5ac3f;
+    color: #70541f;
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cell.snake {
+    background-color: deeppink;
+  }
+
+  .cell.snake-head {
+    background-color: deeppink;
+    z-index: 1;
   }
 
   .cell.dark-hide {
@@ -214,17 +234,30 @@ body {
     border-color: #8aaf7d;
   }
 
+  .cell.wall:not(.dark-hide) {
+    background-color: brown;
+    border: 1px solid #804020;
+  }
+
   .cell.dark-light.snake-head {
     background-color: deeppink;
   }
 
-  .cell.snake:not(.dark-hide) {
+  .cell.snake:not(.dark-hide):not(.poisoned) {
     background-color: deeppink !important;
   }
 
-  .cell.snake-head:not(.dark-hide) {
+  .cell.snake-head:not(.dark-hide):not(.poisoned) {
     background-color: deeppink !important;
     box-shadow: 0 0 10px deeppink;
+  }
+
+  .cell.snake.poisoned {
+    background-color: #9146b5 !important;
+  }
+
+  .cell.snake-head.poisoned {
+    box-shadow: 0 0 10px #9146b5;
   }
 
   .cell.food {
