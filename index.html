@@ -4,7 +4,322 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            width: 95%;
+            margin: 30px auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #e5e5e5;
+            padding: 20px;
+        }
+
+        .sidebar h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 30px;
+        }
+
+        .sidebar .level-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar .level-list .level {
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #aaa;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .sidebar .level-list .active {
+            background-color: #a9d88e;
+        }
+
+        .game-container {
+            flex: 1;
+            min-width: 0;
+            background-color: #f5f5f5;
+            padding: 10px;
+            position: relative;
+        }
+
+        .game-container #win-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #aaaaaa;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .game-container #win-message h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .game-container #win-message p {
+            margin-bottom: 15px;
+        }
+
+        .game-container #win-message button {
+            background-color: #a9d88e;
+            border: 1px solid #689c58;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .game-container #win-message button:hover {
+            background-color: #91c875;
+        }
+
+        .game-info {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .game-info .level-info {
+            flex: 2;
+            border-right: 1px solid #ddd;
+        }
+
+        .game-info .level-info h3 {
+            font-size: 18px;
+        }
+
+        .game-info .level-info p {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .game-info .score-info,
+        .game-info .time-info,
+        .game-info .food-info {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .game-info .score-info h4,
+        .game-info .time-info h4,
+        .game-info .food-info h4 {
+            font-size: 12px;
+        }
+
+        .game-info .score-info p,
+        .game-info .time-info p,
+        .game-info .food-info p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .game-info #pause-btn {
+            margin-left: 15px;
+            padding: 10px;
+            background-color: #e5e5e5;
+            border: 1px solid #aaa;
+            cursor: pointer;
+        }
+
+        #game-board {
+            width: 800px;
+            height: 500px;
+            margin: 10px auto;
+            background-color: #a9d88e;
+            border: 2px solid #689c58;
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+
+        #game-board .cell {
+            border: 1px solid #92c77a;
+        }
+
+        #game-board .snake {
+            background-color: deeppink;
+            border-radius: 5px;
+        }
+
+        #game-board .snake.poisoned {
+            background-color: #9146b5;
+        }
+
+        #game-board .food {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        #game-board .poison {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+        }
+
+        #game-board .ice-tile {
+            background-color: #83c9f3;
+            border: 2px solid #4ca5dc;
+        }
+
+        #game-board .arrow-tile {
+            background-color: #f5d16c;
+            border: 2px solid #d5ac3f;
+            color: #70541f;
+            font-size: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #game-board .cell.speed-tile {
+            background-color: #ffdf70;
+            border: 2px solid #efab34;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        #game-board .cell.snake-head {
+            background-color: deeppink;
+            z-index: 1;
+        }
+
+        #game-board .cell.dark-hide {
+            background-color: #aaaaaa !important;
+            border: #aaaaaa 1px solid;
+            color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        #game-board .cell.dark-light {
+            background-color: #b3d49b;
+            border-color: #8aaf7d;
+        }
+
+        #game-board .cell.wall:not(.dark-hide) {
+            background-color: brown;
+            border: 1px solid #83c9f3;
+        }
+
+        #game-board .cell.dark-light.snake-head {
+            background-color: deeppink;
+        }
+
+        #game-board .cell.snake:not(.dark-hide):not(.poisoned) {
+            background-color: deeppink !important;
+        }
+
+        #game-board .cell.snake-head:not(.dark-hide):not(.poisoned) {
+            background-color: deeppink !important;
+        }
+
+        #game-board .cell.snake.poisoned {
+            background-color: #9146b5 !important;
+        }
+
+        #game-board .cell.food {
+            color: white;
+            text-shadow: 0 0 12px red;
+        }
+
+        #game-board .snake-head {
+            position: relative;
+        }
+
+        #game-board .snake-head::before, #game-board .snake-head::after {
+            content: "";
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 50%;
+        }
+
+        #game-board .snake-head.right::before {
+            top: 8px;
+            right: 5px;
+        }
+
+        #game-board .snake-head.right::after {
+            bottom: 8px;
+            right: 5px;
+        }
+
+        #game-board .snake-head.left::before {
+            top: 8px;
+            left: 5px;
+        }
+
+        #game-board .snake-head.left::after {
+            bottom: 8px;
+            left: 5px;
+        }
+
+        #game-board .snake-head.up::before {
+            top: 5px;
+            left: 8px;
+        }
+
+        #game-board .snake-head.up::after {
+            top: 5px;
+            right: 8px;
+        }
+
+        #game-board .snake-head.down::before {
+            bottom: 5px;
+            left: 8px;
+        }
+
+        #game-board .snake-head.down::after {
+            bottom: 5px;
+            right: 8px;
+        }
+
+        .game-footer {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .game-footer p {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -50,8 +365,7 @@
             </button>
         </div>
         <div class="game-footer">
-            <p>Điều khiển: Phím mũi tên ← ↑ ↓ →</p>
-            <p>Ăn đủ 5 trái cây để qua màn</p>
+            <p>Điều khiển: Phím mũi tên ← ↑ ↓ → hoặc W A S D</p>
         </div>
     </div>
 </div>
