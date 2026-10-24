@@ -70,7 +70,7 @@ function changeLevel(level) {
         'Đụng tường',
         'Trái độc',
         'Mồi chạy trốn',
-        'Hỗn Loạn',
+        'Hỗn loạn',
         'Sương mù'
     ];
     document.getElementById('level-description').textContent = descriptions[level - 1];
@@ -80,19 +80,16 @@ function changeLevel(level) {
         buttons[i].classList.remove('active');
     }
     buttons[level - 1].classList.add('active');
-
     drawMap();
     resetGame();
 }
 
 function isLevel6Wall(x, y) {
-    let topWall = y === 0 && x !== 3 && x !== 12;
-    let bottomWall = y === rows - 1 && x !== 3 && x !== 12;
-    let leftWall = x === 0 && y !== 2 && y !== 7;
-    let rightWall = x === cols - 1 && y !== 2 && y !== 7;
-    let middleWall = y === 4 &&
-        x >= 3 && x <= 12 &&
-        x !== 7 && x !== 8;
+    let topWall = y === 0 && x !== 3 && x !== 4 && x !== 11 && x !== 12;
+    let bottomWall = y === rows - 1 && x !== 3 && x !== 4 && x !== 11 && x !== 12;
+    let leftWall = x === 0 && y !== 2 && y !== 3 && y !== 6 && y !== 7;
+    let rightWall = x === cols - 1 && y !== 2 && y !== 3 && y !== 6 && y !== 7;
+    let middleWall = y === 4 && x >= 3 && x <= 12 && x !== 7 && x !== 8;
     return topWall || bottomWall || leftWall || rightWall || middleWall;
 }
 
@@ -344,12 +341,55 @@ function applyDarkLevel() {
     for (let i = 0; i < cells.length; i++) {
         cells[i].classList.add('dark-hide');
     }
+    function lightCell(x, y) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) {
+            return;
+        }
+        let index = y * cols + x;
+        cells[index].classList.remove('dark-hide');
+        if (!isWall(x, y)) {
+            cells[index].classList.add('dark-light');
+        }
+    }
+
     let head = snake[0];
-    cells[head.y * cols + head.x].classList.remove('dark-hide');
+    for (let i = -1; i <= 1; i++) {
+        let x = head.x + dx;
+        let y = head.y + dy;
+
+        if (dx !== 0) {
+            y += i;
+        } else {
+            x += i;
+        }
+
+        lightCell(x, y);
+    }
+    for (let i = -1; i <= 1; i += 2) {
+        let x = head.x;
+        let y = head.y;
+
+        if (dx !== 0) {
+            y += i;
+        } else {
+            x += i;
+        }
+
+        lightCell(x, y);
+    }
+    for (let i = 0; i < snake.length; i++) {
+        let index = snake[i].y * cols + snake[i].x;
+        cells[index].classList.remove('dark-hide');
+    }
     if (food.x >= 0) {
-        cells[food.y * cols + food.x].classList.remove('dark-hide');
+        for (let y = food.y - 1; y <= food.y + 1; y++) {
+            for (let x = food.x - 1; x <= food.x + 1; x++) {
+                lightCell(x, y);
+            }
+        }
     }
 }
+
 
 function drawGame() {
     drawSnake();
@@ -398,9 +438,8 @@ function resetGame() {
     drawGame();
 }
 
-function checkBody(head, eatFood) {
-    let length = eatFood ? snake.length : snake.length - 1;
-    for (let i = 0; i < length; i++) {
+function checkBody(head) {
+    for (let i = 0; i < snake.length; i++) {
         if (snake[i].x === head.x && snake[i].y === head.y) {
             return true;
         }
@@ -451,10 +490,15 @@ function moveSnake() {
             return;
         }
     } else if (currentLevel === 6) {
-        if (head.x < 0) head.x = cols - 1;
-        if (head.x >= cols) head.x = 0;
-        if (head.y < 0) head.y = rows - 1;
-        if (head.y >= rows) head.y = 0;
+        let oldHead = snake[0];
+        if (head.x < 0 || head.x >= cols ||
+            head.y < 0 || head.y >= rows) {
+            if (isWall(oldHead.x, oldHead.y)) {
+                resetGame();
+                return;
+            }
+            wrapAll(head);
+        }
         if (isWall(head.x, head.y)) {
             resetGame();
             return;
@@ -465,7 +509,7 @@ function moveSnake() {
 
     let eatFood = head.x === food.x && head.y === food.y;
     let eatPoisonFood = currentLevel === 3 && head.x === poisonFood.x && head.y === poisonFood.y;
-    if (checkBody(head, eatFood)) {
+    if (checkBody(head)) {
         resetGame();
         return;
     }
@@ -484,7 +528,7 @@ function moveSnake() {
         createPoisonFood();
     }
     if (currentLevel === 5 && head.x === speedTile.x && head.y === speedTile.y) {
-        speedTicks = SPEED_DURATION; // Pauses when the game is paused.
+        speedTicks = SPEED_DURATION;
         speedTile = {x: -1, y: -1};
     }
     if (foodCount >= FOOD_TARGET) {
@@ -560,13 +604,14 @@ function moveSnake() {
 document.addEventListener('keydown', function (event) {
     let newDx = 0;
     let newDy = 0;
-    if (event.key === 'ArrowUp') {
+    let key = event.key.toLowerCase();
+    if (key === 'arrowup' || key === 'w') {
         newDy = -1;
-    } else if (event.key === 'ArrowDown') {
+    } else if (key === 'arrowdown' || key === 's') {
         newDy = 1;
-    } else if (event.key === 'ArrowLeft') {
+    } else if (key === 'arrowleft' || key === 'a') {
         newDx = -1;
-    } else if (event.key === 'ArrowRight') {
+    } else if (key === 'arrowright' || key === 'd') {
         newDx = 1;
     } else {
         return;
